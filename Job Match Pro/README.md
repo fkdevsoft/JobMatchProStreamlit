@@ -76,7 +76,11 @@ Let me know which PDF you'd like me to run the extractor on (if you upload it in
 
 Environment variables / Cloud APIs
 ---------------------------------
-- If you use `generate_embeddings.py` or `CVPARSER/CVpar_ai.py`, you should set `GOOGLE_API_KEY` in a `.env` file (see `CVPARSER/.env` or create your own). The `python-dotenv` package is used to load that environment variable.
+- Set `OPENAI_API_KEY` in a `.env` file for OpenAI API access (used for embeddings and text generation).
+- Set `PC_API_KEY` in a `.env` file for Pinecone vector database access.
+- The `python-dotenv` package is used to load environment variables.
+- Get your OpenAI API key from: https://platform.openai.com/api-keys
+- Get your Pinecone API key from: https://app.pinecone.io/
 
 Notes
 -----

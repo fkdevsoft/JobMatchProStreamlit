@@ -1,12 +1,30 @@
 import json
 import os
 import re
-from google import genai
+from openai import OpenAI
 from dotenv import load_dotenv
 
-# Load environment variables and configure Gemini
+# Load environment variables and configure OpenAI
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+# Initialize OpenAI client lazily
+_client = None
+
+def get_openai_client():
+    """Get or create OpenAI client."""
+    global _client
+    if _client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "Missing OPENAI_API_KEY environment variable. "
+                "Please set this in your .env file."
+            )
+        _client = OpenAI(api_key=api_key)
+    return _client
+
+# For backward compatibility
+client = None  # Will be initialized when needed
 
 
 def read_job_descriptions(file_path: str) -> str:
@@ -22,8 +40,8 @@ def split_jobs(job_text: str) -> list[str]:
     return [job.strip() for job in jobs if job.strip()]
 
 
-def parse_single_job_with_gemini(job_text: str) -> dict:
-    """Use Gemini API to parse a single job description into JSON format."""
+def parse_single_job_with_openai(job_text: str) -> dict:
+    """Use OpenAI API to parse a single job description into JSON format."""
     
     prompt = f"""Parse this Job Description and return a JSON with ONLY TWO fields:
 1. "job_title"
@@ -64,12 +82,17 @@ JSON:
 """
     
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
+        client = get_openai_client()
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that parses job descriptions into structured JSON format."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3
         )
         
-        response_text = response.text.strip()
+        response_text = response.choices[0].message.content.strip()
         
         # Try to extract JSON from response (handle markdown code blocks if present)
         if "```json" in response_text:
@@ -86,8 +109,8 @@ JSON:
         raise
 
 
-def parse_jobs_with_gemini(job_text: str) -> list[dict]:
-    """Use Gemini API to parse job descriptions into JSON format."""
+def parse_jobs_with_openai(job_text: str) -> list[dict]:
+    """Use OpenAI API to parse job descriptions into JSON format."""
     
     # Split into individual jobs
     individual_jobs = split_jobs(job_text)
@@ -97,7 +120,7 @@ def parse_jobs_with_gemini(job_text: str) -> list[dict]:
     for i, job in enumerate(individual_jobs, 1):
         print(f"  Parsing job {i}/{len(individual_jobs)}...")
         try:
-            parsed_job = parse_single_job_with_gemini(job)
+            parsed_job = parse_single_job_with_openai(job)
             jobs_list.append(parsed_job)
         except Exception as e:
             print(f"  Failed to parse job {i}: {e}")
@@ -120,8 +143,8 @@ def main():
     print("Reading job descriptions...")
     job_text = read_job_descriptions(input_file)
     
-    print("Parsing jobs with Gemini API...")
-    jobs = parse_jobs_with_gemini(job_text)
+    print("Parsing jobs with OpenAI API...")
+    jobs = parse_jobs_with_openai(job_text)
     
     print(f"Parsed {len(jobs)} job descriptions")
     

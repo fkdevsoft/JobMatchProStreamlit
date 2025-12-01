@@ -3,11 +3,28 @@ import time
 import json
 import pandas as pd
 from dotenv import load_dotenv
-from google import genai
-from google.genai import types
+from openai import OpenAI
 
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
+
+# Initialize OpenAI client lazily
+_client = None
+
+def get_openai_client():
+    """Get or create OpenAI client."""
+    global _client
+    if _client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "Missing OPENAI_API_KEY environment variable. "
+                "Please set this in your .env file."
+            )
+        _client = OpenAI(api_key=api_key)
+    return _client
+
+# For backward compatibility
+client = None  # Will be initialized when needed
 
 # Load job descriptions from JSON file
 with open("./output/CV_parsed.json", "r", encoding="utf-8") as f:
@@ -28,14 +45,14 @@ def get_embeddings_batched(jobs, batch_size=20):
             print(f"Processing batch {i} to {i+batch_size}...")
             
             # ONE API call for 'batch_size' documents
-            response = client.models.embed_content(
-                model="text-embedding-004",
-                contents=batch_texts,
-                config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT")
+            client = get_openai_client()
+            response = client.embeddings.create(
+                model="text-embedding-3-small",
+                input=batch_texts
             )
             
             # Extract vectors from response
-            batch_vectors = [entry.values for entry in response.embeddings]
+            batch_vectors = [entry.embedding for entry in response.data]
             
             # Match them back to the job objects
             for job, vector in zip(batch, batch_vectors):

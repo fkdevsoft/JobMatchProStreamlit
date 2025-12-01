@@ -4,15 +4,34 @@ import os
 import uuid
 import pandas as pd
 import json
-from google import genai
+from openai import OpenAI
 
 dotenv.load_dotenv()
 
 # Initialize Pinecone
-pc = Pinecone(api_key=os.getenv("PC_API_KEY"))
+pc_api_key = os.getenv("PC_API_KEY")
+if not pc_api_key:
+    raise ValueError("Missing PC_API_KEY environment variable. Please set this in your .env file.")
+pc = Pinecone(api_key=pc_api_key)
 
-# Initialize Gemini API
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+# Initialize OpenAI API lazily
+_openai_client = None
+
+def get_openai_client():
+    """Get or create OpenAI client."""
+    global _openai_client
+    if _openai_client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "Missing OPENAI_API_KEY environment variable. "
+                "Please set this in your .env file."
+            )
+        _openai_client = OpenAI(api_key=api_key)
+    return _openai_client
+
+# For backward compatibility
+client = None  # Will be initialized when needed
 
 CV_embeddings = pd.DataFrame(pd.read_pickle("./output/embedded_CV.pkl"))
 JD_embeddings = pd.DataFrame(pd.read_pickle("./output/embedded_JD.pkl"))
@@ -20,27 +39,25 @@ JD_embeddings = pd.DataFrame(pd.read_pickle("./output/embedded_JD.pkl"))
 JD_titles, JD_descriptions, JD_embedding = JD_embeddings.columns
 CV_description, CV_embedding = CV_embeddings.columns
 
-job_size = 5
+job_size = 2
 
 index_name = "job-match-pro"
 
-# Create index if needed
-if not pc.has_index(index_name):
+# Create index if needed (dimension updated to 1536 for OpenAI embeddings)
+try:
+    index = pc.Index(index_name)
+except Exception:
+    # Index doesn't exist, create it
     pc.create_index(
         name=index_name,
-        vector_type="dense",
-        dimension=768,
+        dimension=1536,  # OpenAI text-embedding-3-small dimension
         metric="cosine",
         spec=ServerlessSpec(
             cloud="aws",
             region="us-east-1"
-        ),
-        deletion_protection="disabled",
-        tags={"environment": "development"}
+        )
     )
-
-# Get index handle
-index = pc.Index(index_name)
+    index = pc.Index(index_name)
 
 # Upsert JD vectors
 """for row_id, row in JD_embeddings.iterrows():
@@ -178,15 +195,20 @@ Now begin.
 Please analyze and provide the output as a valid JSON array containing the evaluation for each job in this batch.
 """
 
-    # Call Gemini API for this batch
-    print(f"Sending batch {batch_num} to Gemini API...")
-    response = client.models.generate_content(
-        model='gemini-2.5-flash',
-        contents=llm_prompt
+    # Call OpenAI API for this batch
+    print(f"Sending batch {batch_num} to OpenAI API...")
+    client = get_openai_client()
+    response = client.chat.completions.create(
+        model='gpt-4o-mini',
+        messages=[
+            {"role": "system", "content": "You are a Resume to JD matching expert. Analyze the information and produce JSON output with the exact structure specified."},
+            {"role": "user", "content": llm_prompt}
+        ],
+        temperature=0.3
     )
 
     # Extract the response text
-    llm_response = response.text
+    llm_response = response.choices[0].message.content
     print(f"Batch {batch_num} response received.")
 
     # Parse JSON from response

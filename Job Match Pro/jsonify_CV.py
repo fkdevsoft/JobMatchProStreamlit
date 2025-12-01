@@ -1,12 +1,30 @@
 import json
 import os
 import re
-from google import genai
+from openai import OpenAI
 from dotenv import load_dotenv
 
-# Load environment variables and configure Gemini
+# Load environment variables and configure OpenAI
 load_dotenv()
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+# Initialize OpenAI client lazily
+_client = None
+
+def get_openai_client():
+    """Get or create OpenAI client."""
+    global _client
+    if _client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "Missing OPENAI_API_KEY environment variable. "
+                "Please set this in your .env file."
+            )
+        _client = OpenAI(api_key=api_key)
+    return _client
+
+# For backward compatibility
+client = None  # Will be initialized when needed
 
 
 def read_cv_content(file_path: str) -> str:
@@ -15,8 +33,8 @@ def read_cv_content(file_path: str) -> str:
         return f.read()
 
 
-def parse_cv_with_gemini(cv_text: str) -> dict:
-    """Use Gemini API to parse CV into JSON format."""
+def parse_cv_with_openai(cv_text: str) -> dict:
+    """Use OpenAI API to parse CV into JSON format."""
     
     prompt = """Parse this CV/Resume and produce a JSON with ONLY one field called "description".
 
@@ -67,12 +85,17 @@ JSON:
 """
     
     try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
+        client = get_openai_client()
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that parses CVs/resumes into structured JSON format."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3
         )
         
-        response_text = response.text.strip()
+        response_text = response.choices[0].message.content.strip()
         
         # Try to extract JSON from response
         json_match = re.search(r'\{[\s\S]*\}', response_text)
@@ -104,8 +127,8 @@ def main():
     print("Reading CV content...")
     cv_content = read_cv_content(input_file)
     
-    print("Parsing CV with Gemini API...")
-    cv_data = [parse_cv_with_gemini(cv_content)]
+    print("Parsing CV with OpenAI API...")
+    cv_data = [parse_cv_with_openai(cv_content)]
     
     print("Saving parsed CV to JSON...")
     save_cv_json(cv_data, output_file)
