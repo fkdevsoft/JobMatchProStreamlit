@@ -7,7 +7,7 @@ numpy>=1.24
 google-genai>=1.0.0        
 pandas>=2.0.0             
 python-dotenv>=1.0.0       
-pinecone-client>=2.0.0 
+pinecone-client>=3.0.0 # Greater than 3.0.0 
 plotly>=5.0.0       
 # Optional / useful (uncomment if used elsewhere)
 # pdfminer.six>=20221105
