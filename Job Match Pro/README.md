@@ -1,52 +1,111 @@
-# PDF Text Extractor
+# Job Match Pro 💼
 
-A small script to extract text from PDFs using PyMuPDF (primary extractor) and pdfplumber (fallback).
+An AI-powered job matching application that uses semantic search and LLM evaluation to match CVs against job descriptions.
 
-Quick start
+## Features
 
-1. Install dependencies
+- **📤 Upload Multiple JDs**: Upload job description PDFs and automatically process them with AI
+- **📄 CV Matching**: Upload your CV to find the best matching jobs
+- **🤖 AI-Powered Analysis**: Uses Google Gemini for intelligent parsing and evaluation
+- **🔍 Semantic Search**: Pinecone vector database for accurate similarity matching
+- **📊 Detailed Results**: Comprehensive match scores, skills analysis, and AI explanations
+
+## Architecture
+
+```
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Upload JD  │───▶│  JSONify    │───▶│   Embed     │───▶ Pinecone
+│   (PDF)     │    │  (Gemini)   │    │ (text-004)  │    (Upsert)
+└─────────────┘    └─────────────┘    └─────────────┘
+
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Upload CV  │───▶│  JSONify    │───▶│   Query     │───▶ Pinecone
+│   (PDF)     │    │  (Gemini)   │    │ (text-004)  │    (Search)
+└─────────────┘    └─────────────┘    └─────────────┘
+                                             │
+                                             ▼
+                                      ┌─────────────┐
+                                      │  Evaluate   │───▶ Results
+                                      │  (Gemini)   │
+                                      └─────────────┘
+```
+
+## Quick Start
+
+### 1. Install Dependencies
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-Note: If you're developing or running tests, install development dependencies:
+### 2. Configure Environment Variables
 
-```powershell
-pip install -r requirements-dev.txt
+Create a `.env` file in the project root:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+PC_API_KEY=your_pinecone_api_key
 ```
 
-2. Place your PDF in the project folder `C:\Users\Admin\Desktop\HR`.
+### 3. Run the Application
 
-3. Run the script:
+```powershell
+streamlit run main_app.py
+```
+
+### 4. Open in Browser
+
+Visit http://localhost:8501
+
+## Usage Flow
+
+1. **Upload JDs**: Start by uploading one or more job description PDFs
+2. **Review JDs**: View uploaded JDs in the sidebar, delete if needed
+3. **Upload CV**: Once JDs exist, upload your CV for matching
+4. **View Results**: See detailed match analysis with scores and recommendations
+
+## Project Structure
+
+```
+Job Match Pro/
+├── main_app.py              # Main Streamlit application
+├── services/
+│   ├── pdf_service.py       # PDF text extraction
+│   ├── jsonify_service.py   # AI-powered JSON conversion
+│   ├── embedding_service.py # Vector embedding generation
+│   ├── pinecone_service.py  # Vector database operations
+│   └── evaluator_service.py # AI match evaluation
+├── utils/
+│   └── storage.py           # Local JD storage management
+├── data/
+│   └── jd_store.json        # Persistent JD storage
+├── pages/
+│   └── results.py           # Standalone results page
+├── text.py                  # PDF extraction utilities
+└── requirements.txt         # Python dependencies
+```
+
+## API Keys Required
+
+| Service | Purpose | Get Key |
+|---------|---------|---------|
+| Google Gemini | JSONification & Evaluation | [Google AI Studio](https://aistudio.google.com/) |
+| Pinecone | Vector Database | [Pinecone Console](https://www.pinecone.io/) |
+
+## Legacy Scripts
+
+The following scripts are available for standalone use:
+
+### PDF Text Extraction
 
 ```powershell
 python text.py your_resume.pdf
 ```
 
-Run via Streamlit (web UI)
-
-1. Install dependencies:
-
-```powershell
-pip install -r requirements.txt
-```
-
-2. Run Streamlit app:
+### Original Streamlit App (PDF extraction only)
 
 ```powershell
 streamlit run streamlit_app.py
-```
-
-3. Visit the local URL printed by Streamlit (usually http://localhost:8501) and use the upload UI to try a PDF.
-
-The Streamlit app calls the same `smart_extract_pdf` function as `text.py`.
-```
-
-If you run the script with no arguments, it will list all PDFs in the working directory and prompt you to choose one interactively:
-
-```powershell
-python text.py
 ```
 
 Useful flags

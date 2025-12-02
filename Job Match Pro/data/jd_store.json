@@ -1,0 +1,42 @@
+[
+  {
+    "job_title": "DevOps Engineer",
+    "description": "Responsibilities: Manage CI/CD pipelines, automate deployments. Monitor cloud infrastructure, optimize performance. Implement security best practices, backup strategies. Collaborate with development teams for releases. Requirements: Skill Set: Docker, Kubernetes, Jenkins, GitHub Actions, AWS, Azure, GCP, Linux, networking. Technologies: CI/CD, Cloud platforms, Containerization. Category: DevOps",
+    "id": "14ded05c-70e0-4a57-a580-76c817d521af",
+    "filename": "sample_job_descriptions.pdf",
+    "created_at": "2025-12-02T12:44:01.293629",
+    "pinecone_vector_id": "117b72ca-476d-43f8-a33e-ba40a946eb61"
+  },
+  {
+    "job_title": "UI/UX Designer",
+    "description": "Responsibilities: Design intuitive user interfaces for web/mobile. Conduct user research, usability testing. Create wireframes, prototypes, design systems. Collaborate with developers for implementation. Requirements: Skill Set: Figma, Adobe XD, design principles, accessibility. Technologies: UI/UX design tools. Category: UIUX",
+    "id": "d5740b9d-b090-4a63-a74f-e0e02628a6f8",
+    "filename": "sample_job_descriptions.pdf",
+    "created_at": "2025-12-02T12:44:01.293629",
+    "pinecone_vector_id": "52303725-b6fc-4f94-afb7-c2f588bd28c6"
+  },
+  {
+    "job_title": "QA Automation Engineer",
+    "description": "Responsibilities: Develop automated test scripts for web/mobile applications. Conduct functional, regression, performance testing. Identify, document, resolve bugs. Improve testing efficiency. Requirements: Skill Set: Selenium, Playwright, Cypress, APIs, test frameworks. Technologies: Test automation tools. Category: QA",
+    "id": "5e019414-84b4-4ebc-9de9-01e4f7e1b48a",
+    "filename": "sample_job_descriptions.pdf",
+    "created_at": "2025-12-02T12:44:01.293629",
+    "pinecone_vector_id": "13a5a64e-04ec-48af-b040-b0a7fbc2ae20"
+  },
+  {
+    "job_title": "Software Engineer (Full Stack Developer)",
+    "description": "Responsibilities: Develop, maintain full-stack applications. Collaborate on scalable solutions design. Write clean, maintainable code. Conduct code reviews, optimize applications. Deploy, monitor cloud services. Requirements: Skill Set: JavaScript, React.js, Node.js, REST APIs, SQL databases, NoSQL databases, problem-solving, communication. Technologies: Git, CI/CD. Experience Level: Mid-level. Category: Software Development.",
+    "id": "a63ab656-dbe5-4847-aa55-eac9bb334641",
+    "filename": "Job_Descriptions.txt",
+    "created_at": "2025-12-02T13:47:11.859812",
+    "pinecone_vector_id": "334c135d-2eaf-4c34-897c-0d89db2ecb5d"
+  },
+  {
+    "job_title": "Data Analyst",
+    "description": "Responsibilities: Collect, clean, analyze large datasets for insights. Build dashboards, reports for decision-making. Identify business trends, improvement opportunities. Collaborate with stakeholders on requirements. Requirements: Skill Set: Excel, SQL, Python, analytical skills, statistical skills. Technologies: Power BI, Tableau. Experience Level: Mid-level. Category: Data.",
+    "id": "cf3bf331-ced8-4247-9009-38bc05b3edfb",
+    "filename": "Job_Descriptions.txt",
+    "created_at": "2025-12-02T13:47:11.859812",
+    "pinecone_vector_id": "fbaa5b9e-bae0-4ed0-aa82-6f11150f14e2"
+  }
+]
