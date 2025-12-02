@@ -1,14 +1,29 @@
+# Core Streamlit
 streamlit>=1.20
-pymupdf>=1.22.0   # pip package name for PyMuPDF
+
+# Document Processing
+pymupdf>=1.22.0   # pip package name for PyMuPDF (fitz)
 pdfplumber>=0.7.6
-python-dotenv>=0.21.0
-Pillow>=9.0.0
+python-docx>=0.8.11  # For DOCX file support
+
+# Environment & Config
+python-dotenv>=1.0.0
+
+# Data Processing
+pandas>=2.0.0
 numpy>=1.24
-google-genai>=1.0.0        
-pandas>=2.0.0             
-python-dotenv>=1.0.0       
-pinecone-client>=2.0.0 
-plotly>=5.0.0       
-# Optional / useful (uncomment if used elsewhere)
+Pillow>=9.0.0
+
+# Google AI (Gemini for JSONification and Embeddings)
+google-genai>=1.0.0
+
+# Vector Database
+pinecone-client>=2.0.0
+
+# Visualization
+plotly>=5.0.0
+
+# Optional / useful (uncomment if needed)
 # pdfminer.six>=20221105
 # PyPDF2>=3.0.0
+textract>=1.6.5  # For legacy .doc files (requires antiword)
