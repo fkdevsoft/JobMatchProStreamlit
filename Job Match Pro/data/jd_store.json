@@ -38,5 +38,21 @@
     "filename": "sampel (1).txt",
     "created_at": "2025-12-03T11:59:03.872266",
     "pinecone_vector_id": "2ebdf136-63bd-4bf8-beea-21bd1c535458"
+  },
+  {
+    "job_title": "Business Analyst",
+    "description": "Responsibilities:\nTranslate business needs to technical requirements.\nGather and document requirements.\nCreate user stories and process flows.\nSupport testing and implementation.\n\nRequirements:\nSkill Set: SQL, JIRA\nTechnologies: N/A\nExperience Level: Mid-level\nCategory: Data",
+    "id": "30c66108-fcab-49b7-99af-649f631a1f1a",
+    "filename": "Business_Analyst.pdf",
+    "created_at": "2025-12-03T12:17:35.085134",
+    "pinecone_vector_id": "466d05b3-889c-491f-90f8-f0885eda8e95"
+  },
+  {
+    "job_title": "Cloud Architect",
+    "description": "Responsibilities:\nDesign and create scalable cloud architecture solutions.\nManage cloud migration projects.\nEnsure optimal performance and security of cloud environments.\nRequirements:\nSkill Set: AWS, Azure, GCP\nTechnologies: Cloud computing platforms\nExperience Level: Senior\nCategory: Cloud",
+    "id": "2db73c42-4f0d-472c-8301-70240286a6c9",
+    "filename": "Cloud_Architect.pdf",
+    "created_at": "2025-12-03T12:17:52.653591",
+    "pinecone_vector_id": "4f4ea7b7-0be2-472d-afc6-c317cf9673a9"
   }
 ]
