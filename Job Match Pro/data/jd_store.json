@@ -54,5 +54,13 @@
     "filename": "Cloud_Architect.pdf",
     "created_at": "2025-12-03T12:17:52.653591",
     "pinecone_vector_id": "4f4ea7b7-0be2-472d-afc6-c317cf9673a9"
+  },
+  {
+    "job_title": "Product Manager",
+    "description": "Responsibilities:\nDefine product strategy, roadmap.\nPrioritize features based on market research.\nCoordinate with engineering teams.\n\nRequirements:\nSkill Set: Analytical skills, Leadership skills.\nTechnologies:\nExperience Level:\nCategory:",
+    "id": "edce4505-5d98-455b-aef1-b0161345b5dc",
+    "filename": "Product_Manager.pdf",
+    "created_at": "2025-12-03T17:16:32.867736",
+    "pinecone_vector_id": "d8717ea5-3f23-4b9a-93a6-7b6e9ed4ee7c"
   }
 ]
